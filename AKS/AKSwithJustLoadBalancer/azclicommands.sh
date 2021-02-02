@@ -1,0 +1,8 @@
+sub="subscriptionname"
+rg="kaurd"
+aks="kaurd-clust"
+location="uksouth"
+az account set --subscription "$sub"
+az group create --name "$rg" --location "$location"
+az aks create --resource-group "$rg" --name "$aks" --no-wait --node-count 1 --enable-addons monitoring --generate-ssh-keys --node-vm-size "Standard_B2s"
+az aks get-credentials --resource-group "$rg" --name "$aks"
