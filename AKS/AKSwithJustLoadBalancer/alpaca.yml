@@ -25,7 +25,7 @@ spec:
           protocol: TCP
         resources:
           limits:
-            cpu: "1000m"
+            cpu: "700m"
             memory: "256Mi"
         livenessProbe:
           httpGet:
@@ -87,7 +87,7 @@ spec:
         resources:
           requests:
           limits:
-            cpu: "1000m"
+            cpu: "700m"
             memory: "256Mi"
         livenessProbe:
           httpGet:
