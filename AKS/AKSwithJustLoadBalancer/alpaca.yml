@@ -51,7 +51,7 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - port: 8080
+  - port: 80
   selector:
         app: "alpaca-prod"
         ver: "1"
@@ -113,7 +113,7 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - port: 8080
+  - port: 80
   selector:
         app: "bandicoot-prod"
         ver: "2"
