@@ -1,27 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kuardpod
+  name: alpaca-prod
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: kuardpod
+        app: "alpaca-prod"
+        ver: "1"
+        env: "prod"
   template:
     metadata:
       labels:
-        app: kuardpod
+        app: "alpaca-prod"
+        ver: "1"
+        env: "prod"
     spec:
-      volumes:
-        - name: "kuard-data"
-          hostPath:
-            path:  "/var/lib/kuard"
       containers:
-      - name: kuardpod
+      - name: alpaca-prod
         image: gcr.io/kuar-demo/kuard-amd64:blue
-        volumeMounts:
-          - mountPath:  "/data"
-            name:  "kuard-data"
         ports:
         - name:  http
           containerPort:  8080
@@ -53,10 +50,84 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: kuardpod
+  name: alpaca-prod
 spec:
   type: LoadBalancer
   ports:
   - port: 8080
   selector:
-    app: kuardpod
+        app: "alpaca-prod"
+        ver: "1"
+        env: "prod"
+
+# kubectl expose pod bandicoot-prod 
+
+# kubectl run bandicoot-prod \
+# --image=gcr.io/kuar-demo/kuard-amd64:green \
+# --replicas=2 \
+# --port=8080 \
+# --labels="ver=2,app=bandicoot,env=prod" 
+
+# kubectl expose pod bandicoot-prod 
+# kubectl get services -o wide
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bandicoot-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+        app: "bandicoot-prod"
+        ver: "2"
+        env: "prod"
+  template:
+    metadata:
+      labels:
+        app: "bandicoot-prod"
+        ver: "2"
+        env: "prod"
+    spec:
+      containers:
+      - name: bandicoot-prod
+        image: gcr.io/kuar-demo/kuard-amd64:green
+        ports:
+        - name:  http
+          containerPort:  8080
+          protocol: TCP
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "128Mi"
+          limits:
+            cpu: "1000m"
+            memory: "256Mi"
+        livenessProbe:
+          httpGet:
+            path: /healthy
+            port: 8080
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+          periodSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 30
+          timeoutSeconds: 1
+          periodSeconds: 10
+          failureThreshold: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bandicoot-prod
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8080
+  selector:
+        app: "bandicoot-prod"
+        ver: "2"
+        env: "prod"
