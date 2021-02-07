@@ -21,7 +21,7 @@ spec:
     metadata:
       labels:
         app: alpaca
-        ver: 1
+        ver: "1"
         env: prod
     spec:
       containers:
