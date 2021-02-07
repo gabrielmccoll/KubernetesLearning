@@ -10,7 +10,7 @@ spec:
   template:
     metadata:
       labels:
-        app: "alpaca"
+        app: "alpaca-prod"
         ver: "1"
         env: "prod"
     spec:
