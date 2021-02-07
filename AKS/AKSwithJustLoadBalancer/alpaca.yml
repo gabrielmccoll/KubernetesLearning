@@ -118,4 +118,3 @@ spec:
         app: "bandicoot-prod"
         ver: "2"
         env: "prod"
-
