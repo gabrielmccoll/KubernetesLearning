@@ -25,7 +25,7 @@ spec:
           protocol: TCP
         resources:
           limits:
-            cpu: "1000m"
+            cpu: "500m"
             memory: "256Mi"
         livenessProbe:
           httpGet:
@@ -57,16 +57,8 @@ spec:
         ver: "1"
         env: "prod"
 
-# kubectl expose pod bandicoot-prod 
+---
 
-# kubectl run bandicoot-prod \
-# --image=gcr.io/kuar-demo/kuard-amd64:green \
-# --replicas=2 \
-# --port=8080 \
-# --labels="ver=2,app=bandicoot,env=prod" 
-
-# kubectl expose pod bandicoot-prod 
-# kubectl get services -o wide
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -95,7 +87,7 @@ spec:
         resources:
           requests:
           limits:
-            cpu: "1000m"
+            cpu: "500m"
             memory: "256Mi"
         livenessProbe:
           httpGet:
