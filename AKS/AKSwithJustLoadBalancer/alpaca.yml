@@ -1,16 +1,67 @@
-kubectl run alpaca-prod \
---image=gcr.io/kuar-demo/kuard-amd64:blue \
---replicas=3 \
---port=8080 \
---labels="ver=1,app=alpaca,env=prod" 
+# kubectl expose pod alpaca-prod 
 
-kubectl expose pod alpaca-prod 
+# kubectl run bandicoot-prod \
+# --image=gcr.io/kuar-demo/kuard-amd64:green \
+# --replicas=2 \
+# --port=8080 \
+# --labels="ver=2,app=bandicoot,env=prod" 
 
-kubectl run bandicoot-prod \
---image=gcr.io/kuar-demo/kuard-amd64:green \
---replicas=2 \
---port=8080 \
---labels="ver=2,app=bandicoot,env=prod" 
-
-kubectl expose pod bandicoot-prod 
-kubectl get services -o wide
+# kubectl expose pod bandicoot-prod 
+# kubectl get services -o wide
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alpaca-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alpaca-prod
+  template:
+    metadata:
+      labels:
+        app: alpaca
+        ver: 1
+        env: prod
+    spec:
+      containers:
+      - name: alpaca-prod
+        image: gcr.io/kuar-demo/kuard-amd64:blue
+        ports:
+        - name:  http
+          containerPort:  8080
+          protocol: TCP
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "128Mi"
+          limits:
+            cpu: "1000m"
+            memory: "256Mi"
+        livenessProbe:
+          httpGet:
+            path: /healthy
+            port: 8080
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+          periodSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 30
+          timeoutSeconds: 1
+          periodSeconds: 10
+          failureThreshold: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alpaca-pod
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8080
+  selector:
+    app: alpaca-prod
