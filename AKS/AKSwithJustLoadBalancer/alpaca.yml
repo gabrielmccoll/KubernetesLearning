@@ -1,13 +1,3 @@
-# kubectl expose pod alpaca-prod 
-
-# kubectl run bandicoot-prod \
-# --image=gcr.io/kuar-demo/kuard-amd64:green \
-# --replicas=2 \
-# --port=8080 \
-# --labels="ver=2,app=bandicoot,env=prod" 
-
-# kubectl expose pod bandicoot-prod 
-# kubectl get services -o wide
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -20,9 +10,9 @@ spec:
   template:
     metadata:
       labels:
-        app: alpaca
+        app: "alpaca"
         ver: "1"
-        env: prod
+        env: "prod"
     spec:
       containers:
       - name: alpaca-prod
