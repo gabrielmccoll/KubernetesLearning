@@ -6,7 +6,9 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: alpaca-prod
+        app: "alpaca-prod"
+        ver: "1"
+        env: "prod"
   template:
     metadata:
       labels:
