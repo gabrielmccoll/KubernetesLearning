@@ -12,5 +12,6 @@ kubectl run bandicoot-prod \
 --port=8080 \
 --labels="ver=2,app=bandicoot,env=prod" 
 
+kubectl expose pod bandicoot-prod 
 kubectl get services -o wide
 
