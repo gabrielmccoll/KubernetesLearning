@@ -24,8 +24,11 @@ spec:
           containerPort:  8080
           protocol: TCP
         resources:
+          requests:
+            cpu: "500m"
+            memory: "128Mi"
           limits:
-            cpu: "700m"
+            cpu: "1000m"
             memory: "256Mi"
         livenessProbe:
           httpGet:
@@ -86,8 +89,10 @@ spec:
           protocol: TCP
         resources:
           requests:
+            cpu: "500m"
+            memory: "128Mi"
           limits:
-            cpu: "700m"
+            cpu: "1000m"
             memory: "256Mi"
         livenessProbe:
           httpGet:
