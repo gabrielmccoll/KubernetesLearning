@@ -56,4 +56,6 @@ spec:
   ports:
   - port: 8080
   selector:
-    app: alpaca-prod
+        app: "alpaca-prod"
+        ver: "1"
+        env: "prod"
