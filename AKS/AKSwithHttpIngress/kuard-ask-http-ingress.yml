@@ -58,9 +58,9 @@ spec:
       paths:
       - backend:
           serviceName: kuard
-          servicePort: 8080
+          servicePort: 80
         path: /address-lookup-api(/|$)(.*)
       - backend:
           serviceName: kuard
-          servicePort: 8080
+          servicePort: 80
         path: /(.*)
