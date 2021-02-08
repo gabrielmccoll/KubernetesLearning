@@ -18,7 +18,7 @@ spec:
             path:  "/var/lib/kuard"
       containers:
       - name: kuard
-        image: rlintegrationservices.azurecr.io/address-lookup-api:v0
+        image: gabrielmccoll/socretesaddress
         volumeMounts:
           - mountPath:  "/data"
             name:  "kuard-data"
