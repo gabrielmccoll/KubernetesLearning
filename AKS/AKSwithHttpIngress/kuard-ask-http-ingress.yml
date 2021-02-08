@@ -23,6 +23,9 @@ spec:
         volumeMounts:
           - mountPath:  "/data"
             name:  "kuard-data"
+        envFrom:
+          - configMapRef:
+              name: address-lookup-parameters
         ports:
         - name:  http
           containerPort:  8080
