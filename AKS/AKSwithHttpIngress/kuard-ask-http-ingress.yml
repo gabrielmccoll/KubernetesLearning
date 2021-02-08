@@ -69,7 +69,7 @@ metadata:
     kubernetes.io/ingress.class: addon-http-application-routing
 spec:
   rules:
-  - host: kuard.de2664f0f36a41cb8ba4.westeurope.aksapp.io #You'll need to replace this. 
+  - host: kuard.4e72417ce3da4cfbb572.uksouth.aksapp.io #You'll need to replace this. 
     http:
       paths:
       - backend:
