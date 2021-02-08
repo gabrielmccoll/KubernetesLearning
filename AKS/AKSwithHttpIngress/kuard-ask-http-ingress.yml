@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: kuard
+  namespace: group-lookups
 spec:
   replicas: 1
   selector:
@@ -37,7 +38,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: kuard 
+  name: kuard
+  namespace: group-lookups
 spec:
   type: ClusterIP
   ports:
@@ -49,6 +51,7 @@ apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: kuard
+  namespace: group-lookups
   annotations:
     kubernetes.io/ingress.class: addon-http-application-routing
 spec:
@@ -67,6 +70,7 @@ kind: ConfigMap
 apiVersion: v1 
 metadata:
   name: address-lookup-parameters
+  namespace: group-lookups
 data:
   MESSAGE: hello
   SWAGGER_ENDPOINT: kuard.4e72417ce3da4cfbb572.uksouth.aksapp.io
