@@ -18,7 +18,7 @@ spec:
             path:  "/var/lib/kuard"
       containers:
       - name: kuard
-        image: gabrielmccoll/socretesaddress
+        image: gcr.io/kuar-demo/kuard-amd64:blue
         volumeMounts:
           - mountPath:  "/data"
             name:  "kuard-data"
@@ -33,6 +33,7 @@ spec:
           limits:
             cpu: "1000m"
             memory: "256Mi"
+  
 ---
 apiVersion: v1
 kind: Service
@@ -58,9 +59,5 @@ spec:
       paths:
       - backend:
           serviceName: kuard
-          servicePort: 80
-        path: /address-lookup-api(/|$)(.*)
-      - backend:
-          serviceName: kuard
-          servicePort: 80
-        path: /(.*)
+          servicePort: 8080
+        path: /
