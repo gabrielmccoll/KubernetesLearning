@@ -56,11 +56,9 @@ spec:
   - host: kuard.4e72417ce3da4cfbb572.uksouth.aksapp.io #You'll need to replace this. 
     http:
       paths:
+    http:
+      paths:
       - backend:
           serviceName: kuard
           servicePort: 8080
-        path: /address-lookup-api(/|$)(.*)
-      - backend:
-          serviceName: kuard
-          servicePort: 8080
-        path: /(.*)
+        path: /
