@@ -1,3 +1,12 @@
+kind: ConfigMap 
+apiVersion: v1 
+metadata:
+  name: address-lookup-parameters
+  namespace: group-lookups
+data:
+  MESSAGE: hello
+  SWAGGER_ENDPOINT: kuard.4e72417ce3da4cfbb572.uksouth.aksapp.io
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -63,12 +72,4 @@ spec:
           serviceName: kuard
           servicePort: 8080
         path: /
----
-kind: ConfigMap 
-apiVersion: v1 
-metadata:
-  name: address-lookup-parameters
-  namespace: group-lookups
-data:
-  MESSAGE: hello
-  SWAGGER_ENDPOINT: kuard.4e72417ce3da4cfbb572.uksouth.aksapp.io
+
