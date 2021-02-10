@@ -1,6 +1,6 @@
-apiVerson: v1
+kind: ConfigMap 
+apiVersion: v1 
+metadata:
+  name: kuard-config
 data:
   httpsuffix: 4e72417ce3da4cfbb572.uksouth.aksapp.io
-kind: ConfigMap
-metadata: 
-  name: kuard-config
