@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kuard
+  namespace: group-lookups
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kuard
+  template:
+    metadata:
+      labels:
+        app: kuard
+    spec:
+      volumes:
+        - name: "kuard-data"
+          hostPath:
+            path:  "/var/lib/kuard"
+      containers:
+      - name: kuard
+        image: gabrielmccoll/socretesaddress:latest
+        volumeMounts:
+          - mountPath:  "/data"
+            name:  "kuard-data"
+        envFrom:
+          - configMapRef:
+              name: address-lookup-parameters
+        ports:
+        - name:  http
+          containerPort:  8080
+          protocol: TCP
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "128Mi"
+          limits:
+            cpu: "1000m"
+            memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kuard
+  namespace: group-lookups
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8080
+  selector:
+    app: kuard
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: kuard
+  namespace: group-lookups
+  annotations:
+    kubernetes.io/ingress.class: addon-http-application-routing
+spec:
+  rules:
+  - host: kuard.4e72417ce3da4cfbb572.uksouth.aksapp.io #You'll need to replace this. 
+    http:
+      paths:
+      - backend:
+          serviceName: kuard
+          servicePort: 8080
+        path: /
+      - backend:
+          serviceName: kuard
+          servicePort: 80
+        path: /address-lookup-api
+
