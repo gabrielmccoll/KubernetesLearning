@@ -46,6 +46,12 @@ spec:
           timeoutSeconds: 1
           periodSeconds: 10
           failureThreshold: 3
+        env:
+          - name: HTTPSUFFIX
+            valueFrom:
+              configMapKeyRef:
+                name: kuard-config
+                key: httpsuffix
 ---
 apiVersion: v1
 kind: Service
