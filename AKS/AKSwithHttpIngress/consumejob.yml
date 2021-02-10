@@ -16,8 +16,8 @@ spec:
         chapter: jobs
     spec:
       containers:
-        - image:  "gcr.io/kuar-demo/kuard-amd64:blue"
-          name:  worker
+        - name:  worker
+          image:  "gcr.io/kuar-demo/kuard-amd64:blue"
           imagePullPolicy: Always
           args:
           - "--keygen-enable"
