@@ -1,11 +1,11 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: consumers
   labels:
     app: message-queue
     component: consumer
     chapter: jobs
+  name: consumers
 spec:
   parallelism: 5
   template:
@@ -19,9 +19,5 @@ spec:
         - name:  worker
           image:  "gcr.io/kuar-demo/kuard-amd64:blue"
           imagePullPolicy: Always
-          args:
-          - "--keygen-enable"
-          - "--keygen-exit-on-complete"
-          - "--keygen-memq-server=http://kuard.3b55544de056443fa2dc.uksouth.aksapp.io/a/memq/server"
-          - "--keygen-memq-queue=keygen"
+          command: ["kuard",  "--keygen-enable","--keygen-memq-queue=keygen", "--keygen-exit-on-complete", "--keygen-memq-server=http://kuard.3b55544de056443fa2dc.uksouth.aksapp.io/a/memq/server"]
       restartPolicy: OnFailure
