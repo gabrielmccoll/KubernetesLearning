@@ -16,7 +16,7 @@ spec:
         chapter: jobs
     spec:
       containers:
-        restartPolicy: OnFailure
+      restartPolicy: OnFailure
         - image:  "gcr.io/kuar-demo/kuard-amd64:blue"
           name:  worker
           imagePullPolicy: Always
