@@ -16,6 +16,7 @@ spec:
         chapter: jobs
     spec:
       containers:
+        restartPolicy: OnFailure
         - image:  "gcr.io/kuar-demo/kuard-amd64:blue"
           name:  worker
           imagePullPolicy: Always
@@ -24,4 +25,3 @@ spec:
           - "--keygen-exit-on-complete"
           - "--keygen-memq-server=http://kuard.3b55544de056443fa2dc.uksouth.aksapp.io/a/memq/server"
           - "--keygen-memq-queue=keygen"
-        restartPolicy: OnFailure
