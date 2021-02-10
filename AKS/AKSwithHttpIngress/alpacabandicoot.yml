@@ -19,6 +19,9 @@ spec:
       containers:
       - name: alpaca-prod
         image: gcr.io/kuar-demo/kuard-amd64:purple
+        command:
+          - "/kuard"
+          - "$(HTTPSUFFIX)"
         ports:
         - name:  http
           containerPort:  8080
