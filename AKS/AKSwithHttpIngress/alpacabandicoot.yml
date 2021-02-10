@@ -139,3 +139,7 @@ spec:
           serviceName: bandicoot-prod
           servicePort: 8080
         path: /
+      - backend:
+          serviceName: alpaca-prod
+          servicePort: 8080
+        path: /a/
