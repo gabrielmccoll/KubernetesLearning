@@ -1,0 +1,141 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alpaca-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+        app: "alpaca-prod"
+        ver: "1"
+        env: "prod"
+  template:
+    metadata:
+      labels:
+        app: "alpaca-prod"
+        ver: "1"
+        env: "prod"
+    spec:
+      containers:
+      - name: alpaca-prod
+        image: gcr.io/kuar-demo/kuard-amd64:blue
+        ports:
+        - name:  http
+          containerPort:  8080
+          protocol: TCP
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "128Mi"
+          limits:
+            cpu: "1000m"
+            memory: "256Mi"
+        livenessProbe:
+          httpGet:
+            path: /healthy
+            port: 8080
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+          periodSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 30
+          timeoutSeconds: 1
+          periodSeconds: 10
+          failureThreshold: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alpaca-prod
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8080
+  selector:
+        app: "alpaca-prod"
+        ver: "1"
+        env: "prod"
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bandicoot-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+        app: "bandicoot-prod"
+        ver: "2"
+        env: "prod"
+  template:
+    metadata:
+      labels:
+        app: "bandicoot-prod"
+        ver: "2"
+        env: "prod"
+    spec:
+      containers:
+      - name: bandicoot-prod
+        image: gcr.io/kuar-demo/kuard-amd64:green
+        ports:
+        - name:  http
+          containerPort:  8080
+          protocol: TCP
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "128Mi"
+          limits:
+            cpu: "1000m"
+            memory: "256Mi"
+        livenessProbe:
+          httpGet:
+            path: /healthy
+            port: 8080
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+          periodSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 30
+          timeoutSeconds: 1
+          periodSeconds: 10
+          failureThreshold: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bandicoot-prod
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8080
+  selector:
+        app: "bandicoot-prod"
+        ver: "2"
+        env: "prod"
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: kuard
+  annotations:
+    kubernetes.io/ingress.class: addon-http-application-routing
+spec:
+  rules:
+  - host: kuard.3b55544de056443fa2dc.uksouth.aksapp.io #You'll need to replace this. 
+    http:
+      paths:
+      - backend:
+          serviceName: bandicoot-prod
+          servicePort: 8080
+        path: /
