@@ -1,0 +1,89 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: database
+  labels:
+    volume: my-volume
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    path: /exports
+    server: 192.168.0.1
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: database
+spec:
+  resources:
+    requests:
+      storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  selector:
+    matchLabels:
+      volume: my-volume
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: database
+        image: mysql
+        resources:
+          limits:
+            memory: "2Gi"
+            cpu: "1"
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            value: password01
+          - name: MYSQL_USER
+            value: gm
+          - name: MYSQL_PASSWORD
+            value: pass
+          - name: MYSQL_DATABASE
+            value: gmdbkube
+        livenessProbe:
+          tcpSocket:
+            port: 3306
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+          - name: database
+            mountPath: "/var/lib/mysql"
+      volumes:
+        - name: database
+          persistentVolumeClaim:
+            claimName: database
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+spec:
+  selector:
+    app: mysql
+  type: NodePort
+  ports:
+  - port: 3306
+    protocol: TCP
+
+
+#can access from this
+# kubectl get services, get the port it's using to export then
+# mysql   -ugm -ppass -theport 
+# see changes to standard nginxingress controller

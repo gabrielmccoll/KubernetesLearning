@@ -1,0 +1,109 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: database
+  labels:
+    volume: my-volume
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    path: /exports
+    server: 192.168.0.1
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: database
+spec:
+  resources:
+    requests:
+      storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  selector:
+    matchLabels:
+      volume: my-volume
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: database
+        image: mysql
+        resources:
+          limits:
+            memory: "2Gi"
+            cpu: "1"
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            value: password01
+          - name: MYSQL_USER
+            value: gm
+          - name: MYSQL_PASSWORD
+            value: pass
+          - name: MYSQL_DATABASE
+            value: gmdbkube
+        livenessProbe:
+          tcpSocket:
+            port: 3306
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+          - name: database
+            mountPath: "/var/lib/mysql"
+      volumes:
+        - name: database
+          persistentVolumeClaim:
+            claimName: database
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+spec:
+  selector:
+    app: mysql
+  ports:
+  - port: 3306
+    protocol: TCP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tcp-controller-configmap
+data:
+  9000: "default/mysql:3306"
+
+#can access from this mysql   -ugm -ppass -P9000 
+# see changes to standard nginxingress controller
+# https://kubernetes.github.io/ingress-nginx/user-guide/exposing-tcp-udp-services/
+# https://www.ibm.com/support/knowledgecenter/en/SSSHTQ/omnibus/helms/all_helms/wip/reference/hlm_expose_probe.html
+# The TCP/UDP services configmap flags --tcp-services-configmap=tcp-controller-configmap and --udp-services-configmap=udp-controller-configmap in the .spec.template.spec.containers[].args[] attribute. An example is shown in the following JSON snippet:
+# "spec": {
+#         "containers": [
+#             {
+#             "args": [
+#               "/nginx-ingress-controller",
+#               "--default-backend-service=$(POD_NAMESPACE)/default-backend",
+#               "--configmap=$(POD_NAMESPACE)/nginx-ingress-controller",
+#               "--report-node-internal-ip-address=true",
+#               "--annotations-prefix=ingress.kubernetes.io",
+#               "--enable-ssl-passthrough=true",
+#               "--publish-status-address=9.42.83.226",
+#               "--udp-services-configmap=default/udp-controller-configmap",
+#               "--tcp-services-configmap=default/tcp-controller-configmap" THIS ONE 
+#                 ],
