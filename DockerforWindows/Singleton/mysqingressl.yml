@@ -81,7 +81,7 @@ spec:
   - port: 3306
     protocol: TCP
 ---
-apiVersion: v1
+apiVersion: v1h
 kind: ConfigMap
 metadata:
   name: tcp-controller-configmap
