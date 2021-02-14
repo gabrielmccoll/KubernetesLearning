@@ -1,0 +1,45 @@
+apiVersion: beta.kaur.com/v1
+kind: LoadTest
+metadata:
+  name: my-loadtest
+spec:
+  service: my-service
+  scheme: https
+  requestPerSecond: 1000
+  paths:
+  - /index.html
+  - /login.html
+  - /shares/my-shares/
+---
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: kaur-validator
+webhooks:
+- name: validator.kaur.com
+  rules:
+    - apiGroups:
+      - "beta.kaur.com"
+      apiVersions:
+        - v1
+      operations:
+        - CREATE
+      resources:
+        - loadtests
+  clientConfig:
+    url: https://localhost:8080
+    caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS1NSUlCNWpDQ0FVOENBUUF3WURFTE1Ba0dBMVVFQmhNQ1ZWTXhDekFKQmdOVkJBZ1RBbmRoTVEwd0N3WURWUVFIRXdSamFYUjVNUTR3REFZRFZRUUtFd1ZOZVNCRGJ6RVVNQklHQTFVRUN4TUxWMmxrWjJWMElFWmhjbTB4RHpBTkJnTlZCQU1UQm0xNWRYTmxjakNCbnpBTkJna3Foa2lHOXcwQkFRRUZBQU9CalFBd2dZa0NnWUVBNExxWm5nWmV4Ymg5N2xwSEsyK0Zxai9JcWIwUlNkYXBUQXFxNU1IYlZQaXdlNmgwMU5uSktrN05yWHRjelJrZ214Zk1aaUw4S3N4OWZUbzZNQThQRWRkZTFQamZUdHFjRGZscVdBbngvazk2Z1FQdjRpcGxjbXB4M3ZTTVZRdWRzZzdrd0gvWEVKV0N2Y044d0hEdXdxbHZHd1g0QzErZUk5cjVYbStvZHBFQ0F3RUFBYUJHTUVRR0NTcUdTSWIzRFFFSkRqRTNNRFV3TXdZRFZSMFJCQ3d3S29FUWMyOXRaVzl1WlVCdGVXTnZMbU52YllZV2FIUjBjSE02THk5c2IyTmhiR2h2YzNRNk9EQTRNREFOQmdrcWhraUc5dzBCQVFzRkFBT0JnUUROclYrcjlHMlZ1emEyY2pWcHRuL051cHJJT2IrWGJNOEhybVVsSTZHNjQ0TzhkY3VlcjBXeUlvSkVNcjZyT0lEMXdVR092VkUyRzB2cmRUMTZKb3VMTzBIM2VmUlpBRDloV0J1aWlkTEVTMVh4Q1dBWGtoTThWUmpVZi8vMHoxMUFFK3ZsSmhTUEY4YmU0a2NoM09kSU1Xa1JUUTBuMWpKL0trOEJHOHhGOHc9PS0tLS0tRU5EIENFUlRJRklDQVRFIFJFUVVFU1QtLS0tLQ==
+---
+apiVersion: certificates.k8s.io/v1beta1
+kind: CertificateSigningRequest 
+metadata:
+  name: validating-controller.default
+spec:
+  groups:
+  - system:authenticated
+  request: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJQjVqQ0NBVThDQVFBd1lERUxNQWtHQTFVRUJoTUNWVk14Q3pBSkJnTlZCQWdUQW5kaE1RMHdDd1lEVlFRSApFd1JqYVhSNU1RNHdEQVlEVlFRS0V3Vk5lU0JEYnpFVU1CSUdBMVVFQ3hNTFYybGtaMlYwSUVaaGNtMHhEekFOCkJnTlZCQU1UQm0xNWRYTmxjakNCbnpBTkJna3Foa2lHOXcwQkFRRUZBQU9CalFBd2dZa0NnWUVBNExxWm5nWmUKeGJoOTdscEhLMitGcWovSXFiMFJTZGFwVEFxcTVNSGJWUGl3ZTZoMDFObkpLazdOclh0Y3pSa2dteGZNWmlMOApLc3g5ZlRvNk1BOFBFZGRlMVBqZlR0cWNEZmxxV0FueC9rOTZnUVB2NGlwbGNtcHgzdlNNVlF1ZHNnN2t3SC9YCkVKV0N2Y044d0hEdXdxbHZHd1g0QzErZUk5cjVYbStvZHBFQ0F3RUFBYUJHTUVRR0NTcUdTSWIzRFFFSkRqRTMKTURVd013WURWUjBSQkN3d0tvRVFjMjl0Wlc5dVpVQnRlV052TG1OdmJZWVdhSFIwY0hNNkx5OXNiMk5oYkdodgpjM1E2T0RBNE1EQU5CZ2txaGtpRzl3MEJBUXNGQUFPQmdRRE5yVityOUcyVnV6YTJjalZwdG4vTnVwcklPYitYCmJNOEhybVVsSTZHNjQ0TzhkY3VlcjBXeUlvSkVNcjZyT0lEMXdVR092VkUyRzB2cmRUMTZKb3VMTzBIM2VmUloKQUQ5aFdCdWlpZExFUzFYeENXQVhraE04VlJqVWYvLzB6MTFBRSt2bEpoU1BGOGJlNGtjaDNPZElNV2tSVFEwbgoxakovS2s4Qkc4eEY4dz09Ci0tLS0tRU5EIENFUlRJRklDQVRFIFJFUVVFU1QtLS0tLQo=
+  usages:
+    - digital signature
+    - key encipherment
+    - key agreement
+    - server auth
