@@ -43,7 +43,7 @@ spec:
             port: 80
         imagePullPolicy: Always
       dnsPolicy: ClusterFirst
-      restartPolicy: Always
+      restartPolicy: Always #precommit check
       securityContext:
           seccompProfile:
             type: RuntimeDefault
