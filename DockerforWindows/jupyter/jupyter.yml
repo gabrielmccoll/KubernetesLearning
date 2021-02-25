@@ -15,8 +15,35 @@ spec:
       labels:
         app: jupyter
     spec:
+      automountServiceAccountToken: false
       containers:
       - name: jupyter
-        image: jupyter/scipy-notebook:abdb27a6dfbb
+        image: jupyter/scipy-notebook@sha256:45b23dee08af5e43a7fea6c4cf9c25ccf269ee113168c19722f87876677c5cb2
+        resources:
+          limits:
+            memory: "500mi"
+            cpu: "1"
+          requests:
+            memory: "500mi"
+            cpu: "1"
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+              - NET_RAW
+              - ALL
+          runAsUser: 12000
+          runAsNonRoot: true
+        readinessProbe:
+          httpGet:
+            port: 80
+        livenessProbe:
+          httpGet:
+            port: 80
+        imagePullPolicy: Always
       dnsPolicy: ClusterFirst
       restartPolicy: Always
+      securityContext:
+          seccompProfile:
+            type: RuntimeDefault
